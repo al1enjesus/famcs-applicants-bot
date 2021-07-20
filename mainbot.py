@@ -15,7 +15,7 @@ DataBase = datamanipulation.DataBase()
 @bot.message_handler(commands=['start', 'go'])
 def start_handler(message):
     bot.send_message(message.chat.id,
-                     "Привет, абитуриент! Напиши свой промежуток баллов. [ПРИМЕР: 370-361]",
+                     "Привет, абитуриент! Напиши свой промежуток баллов. [ПРИМЕР: 365-361]",
                      reply_markup=keyboard)
 
 
@@ -25,7 +25,7 @@ def send_score(message):
     if message.text in ["Инфа", "Кб", "Пи", "Пм"]:
         grade = DataBase.get_user_score(message.chat.id)
         if grade is None:
-            bot.send_message(message.chat.id, "*Напиши свой промежуток баллов. [Пример: 370-361]*")
+            bot.send_message(message.chat.id, "*Напиши свой промежуток баллов. [Пример: 365-361]*")
 
     if message.text == "Инфа" and grade:
         try:
