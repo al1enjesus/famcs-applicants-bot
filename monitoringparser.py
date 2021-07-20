@@ -77,7 +77,7 @@ class Parser:
         self.last_update_time, self.last_fetch = self.fetch_data()
 
     def __call__(self, spec_name, grade):
-        if self.last_update_time - clock() < 60:
+        if self.last_update_time - clock() > 60:
             self.last_update_time, self.last_fetch = self.fetch_data()
 
         for row in self.last_fetch:
@@ -95,7 +95,7 @@ class Parser:
     def pretty_formatting(self, row, grade):
         user_grade_index = self.template.index(grade)
         cells = row.find_all("td")
-        answer = ""
+        answer = str()
         better_res = 0
 
         for index, cell in enumerate(cells):
