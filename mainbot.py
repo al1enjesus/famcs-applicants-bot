@@ -7,7 +7,9 @@ import datamanipulation
 TOKEN = os.getenv("bot_api_key")
 bot = telebot.TeleBot(TOKEN)
 keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard.row("Инфа", "Кб", "Пи", "Пм")
+keyboard.row("Инфа", "Пи")
+keyboard.row("Кб", "Пм")
+keyboard.row("Ам", "Эк")
 Parser = monitoringparser.Parser()
 DataBase = datamanipulation.DataBase()
 
@@ -34,7 +36,7 @@ def start_handler(message):
 @bot.message_handler(content_types=['text'])
 def send_score(message):
     print("{}: {}".format(message.from_user.username, message.text))
-    if message.text in ["Инфа", "Кб", "Пи", "Пм"]:
+    if message.text in ["Инфа", "Кб", "Пи", "Пм", "Ам", "Эк"]:
         grade = DataBase.get_user_score(message.chat.id)
         if grade is None:
             bot.send_message(message.chat.id, "*Напиши свои баллы. [Пример: 365]*")
@@ -77,6 +79,24 @@ def send_score(message):
         else:
             bot.send_message(message.chat.id, response)
 
+    elif message.text == "Ам" and grade:
+        try:
+            response = Parser("актуарная математика", grade)
+        except Exception:
+            bot.send_message(message.chat.id, "Проверь правильность написания баллов!")
+            DataBase.delete_user(message.chat.id)
+        else:
+            bot.send_message(message.chat.id, response)
+    
+    elif message.text == "Эк" and grade:
+        try:
+            response = Parser("экономическая кибернетика (направление - математические методы и компьютерное моделирование в экономике)", grade)
+        except Exception:
+            bot.send_message(message.chat.id, "Проверь правильность написания баллов!")
+            DataBase.delete_user(message.chat.id)
+        else:
+            bot.send_message(message.chat.id, response)
+
     else:
         try:
             grade = int(message.text)
@@ -85,7 +105,7 @@ def send_score(message):
         else:    
             DataBase.add_user(message.chat.id, message.from_user.username, grade_to_range(grade))
             bot.send_message(message.chat.id, "Если ты правильно написал балл, то выбирай специальность, которую хочешь "
-                                            "посмотреть.\nНапиши/Нажми Инфа/Кб/Пм/Пи")
+                                            "посмотреть.\nНапиши/Нажми Инфа/Кб/Пм/Пи/Ам/Эк", reply_markup=keyboard)
 
 
 while True:
