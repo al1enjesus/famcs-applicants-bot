@@ -12,11 +12,23 @@ Parser = monitoringparser.Parser()
 DataBase = datamanipulation.DataBase()
 
 
+def grade_to_range(grade: int) -> str:
+    if grade >= 391:               
+        return "391+"
+    if grade <= 120:
+        return "120-" 
+    remainder = grade % 5
+    if remainder == 0:
+        return f'{grade}-{grade - 4}'
+    return f'{grade - remainder + 5}-{grade - remainder + 1}'
+
+
 @bot.message_handler(commands=['start', 'go'])
 def start_handler(message):
     bot.send_message(message.chat.id,
-                     "Привет, абитуриент! Напиши свой промежуток баллов. [ПРИМЕР: 365-361]",
+                     "Привет, абитуриент! Напиши свои баллы. [Пример: 365]",
                      reply_markup=keyboard)
+    DataBase.delete_user(message.chat.id)
 
 
 @bot.message_handler(content_types=['text'])
@@ -25,7 +37,7 @@ def send_score(message):
     if message.text in ["Инфа", "Кб", "Пи", "Пм"]:
         grade = DataBase.get_user_score(message.chat.id)
         if grade is None:
-            bot.send_message(message.chat.id, "*Напиши свой промежуток баллов. [Пример: 365-361]*")
+            bot.send_message(message.chat.id, "*Напиши свои баллы. [Пример: 365]*")
 
     if message.text == "Инфа" and grade:
         try:
@@ -66,9 +78,14 @@ def send_score(message):
             bot.send_message(message.chat.id, response)
 
     else:
-        DataBase.add_user(message.chat.id, message.from_user.username, message.text)
-        bot.send_message(message.chat.id, "Если ты правильно написал балл, то выбирай специальность, которую хочешь "
-                                          "посмотреть.\nНапиши/Нажми Инфа/Кб/Пм/Пи")
+        try:
+            grade = int(message.text)
+        except ValueError:
+            bot.send_message(message.chat.id, "Некорректный ввод =(")
+        else:    
+            DataBase.add_user(message.chat.id, message.from_user.username, grade_to_range(grade))
+            bot.send_message(message.chat.id, "Если ты правильно написал балл, то выбирай специальность, которую хочешь "
+                                            "посмотреть.\nНапиши/Нажми Инфа/Кб/Пм/Пи")
 
 
 while True:
