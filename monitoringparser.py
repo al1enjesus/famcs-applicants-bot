@@ -7,8 +7,8 @@ class Parser:
     def __init__(self) -> None:
         self.url = "https://abit.bsu.by/formk1?id=1"
         self.template = [
-            "План приема на факультет",
-            "Подано заявлений",
+            # "План приема на факультет",
+            # "Подано заявлений",
             "Специальность",
             "План приема на бюджет",
             "Целевики",
@@ -100,17 +100,15 @@ class Parser:
 
         for index, cell in enumerate(cells):
             if cell.string is not None:
-                if (index > 6) and (index < user_grade_index):
+                if (index >= 6) and (index < user_grade_index):
                     better_res += int(cells[index].string)
-                answer += "{}: {}\n".format(self.template[index], cell.string)
+                answer += f"{self.template[index]}: {cell.string}\n"
 
         if cells[user_grade_index].string is None:
             user_grade_lvl = 0
         else:
             user_grade_lvl = cells[user_grade_index].string
 
-        answer += "Вы указали балл: {}\nВас опережает {} + {} человек".format(
-            grade, better_res, user_grade_lvl
-        )
+        answer += f"Вы указали балл: {grade}\nВас опережает {better_res} + {user_grade_lvl} человек"
 
         return answer
