@@ -46,7 +46,7 @@ Example output
 Вас опережает 5 + 3 человек
 ```
 ## Contributing
-You can help to maintain this bot by providing a hosting service or by modifying parser due to updates of table format from the [BSU page](https://abit.bsu.by/formk1?id=1").
+You can help to maintain this bot by providing a hosting service or by modifying parser due to updates of table format from the [BSU page](https://abit.bsu.by/formk1?id=1).
 
 ## Credits
 Original credits go to:
